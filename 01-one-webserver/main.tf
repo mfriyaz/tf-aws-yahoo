@@ -1,6 +1,6 @@
 # Create a Security Group for an EC2 instance
 resource "aws_security_group" "demosg" {
-	name = "terraform-example-instance-sg
+	name = "terraform-example-instance-sg"
 	vpc_id = data.aws_vpc.default.id
 	ingress {
 		from_port =8080
