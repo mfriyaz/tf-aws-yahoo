@@ -14,6 +14,7 @@ resource "aws_security_group" "demosg" {
 resource "aws_instance" "example" {
   ami           = "ami-0afc7fe9be84307e4"
   instance_type = "t2.micro"
+  vpc_security_group_ids = [ aws_security_group.demosg.id ]
 
 tags={
 	Name = "terraform-example"
