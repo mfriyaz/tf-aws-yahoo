@@ -37,7 +37,7 @@ resource "aws_security_group" "allow_ssh_http" {
 resource "aws_instance" "ubuntu_instance" {
   ami                    = "ami-01938df366ac2d954"  # Ubuntu 22.04 LTS for ap-south-east
   instance_type          = "t2.micro"
-  key_name               = "terraform"
+  key_name               = "terrafrom"
   vpc_security_group_ids = [aws_security_group.allow_ssh_http.id]
   associate_public_ip_address = true
 
