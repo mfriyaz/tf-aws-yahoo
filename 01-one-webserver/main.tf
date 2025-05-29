@@ -4,6 +4,8 @@ resource "aws_vpc" "main" {
 
   tags = {
     Name = "main"
+    Environment = "dev"
+    Owner = "Riyaz"
     }
   }
 
