@@ -20,5 +20,10 @@ resource "aws_internet_gateway" "gw" {
 resource "aws_subnet" "public" {
   vpc_id = aws_vpc.main.id
   cidr_block = "10.0.2.0/24"
-  availability_zone = "ap_southeast-1"
+  availability_zone = "ap_southeast-1a"
+
+  tags = {
+    Name = "main"
+    Enviromnet = "dev"
+  }
   }
