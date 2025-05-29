@@ -3,7 +3,7 @@ resource "aws_vpc" "main" {
   
 
   tags = {
-    Name = ["main,Ahamed"]
+    Name = "main,Ahamed"
     Environment = "dev"
     Owner = "Riyaz"
     }
