@@ -37,10 +37,7 @@ resource "aws_subnet" "public" {
     availability_zone = "ap-southeast-1b"
   } */
 
-  provider "aws" {
-  region = "ap-southeast-1" # Change this to your preferred region
-}
-
+  
 # Get the default VPC
 data "aws_vpc" "default" {
   default = true
