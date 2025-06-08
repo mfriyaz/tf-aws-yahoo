@@ -79,7 +79,6 @@ resource "aws_security_group" "allow_ssh_http" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
 # Launch Ubuntu EC2 instance
 resource "aws_instance" "ubuntu_instance" {
   ami                    = "ami-0c1907b6d738188e5"  # Ubuntu 22.04 LTS for us-east-1
