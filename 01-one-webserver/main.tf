@@ -97,6 +97,6 @@ resource "aws_instance" "ubuntu_instance" {
               EOF
 
   tags = {
-    Name = "UbuntuSingleTier"
+    Name = "UbuntuSingleTier01"
   }
 }
