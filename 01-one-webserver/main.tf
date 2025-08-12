@@ -49,14 +49,14 @@ resource "aws_instance" "ubuntu_instance" {
   associate_public_ip_address = true
   iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
 
-  user_data = <<-EOF
+  /* user_data = <<-EOF
               #!/bin/bash
               apt update -y
               apt install -y apache2
               systemctl enable apache2
               systemctl start apache2
               echo "<h1>Ubuntu Web Server Running</h1>" > /var/www/html/index.html
-              EOF
+              EOF */
 
   tags = {
     Name = "UbuntuSingleTier01"
