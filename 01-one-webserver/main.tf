@@ -1,6 +1,3 @@
-provider "aws" {
-  region = "us-east-1" # change if needed
-}
 
 # Get the default VPC
 data "aws_vpc" "default" {
@@ -101,6 +98,6 @@ resource "aws_cloudwatch_metric_alarm" "ec2_auto_recovery" {
   }
 
   alarm_actions = [
-    "arn:aws:automate:${var.region}:ec2:recover"
+    "arn:aws:automate:ap-southeast-1:ec2:recover"
   ]
 }
