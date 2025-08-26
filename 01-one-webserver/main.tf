@@ -1,13 +1,16 @@
+provider "aws" {
+  region = "us-east-1" # change if needed
+}
 
 # Get the default VPC
 data "aws_vpc" "default" {
   default = true
 }
 
-# Create security group allowing SSH and HTTP
+# Create security group allowing SSH, HTTP, and 8080
 resource "aws_security_group" "allow_ssh_http" {
   name        = "allow_ssh_http"
-  description = "Allow SSH and HTTP inbound traffic"
+  description = "Allow SSH, HTTP and 8080 inbound traffic"
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
@@ -25,8 +28,9 @@ resource "aws_security_group" "allow_ssh_http" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-   ingress {
-    description = "HTTP"
+
+  ingress {
+    description = "App Port 8080"
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
@@ -40,29 +44,8 @@ resource "aws_security_group" "allow_ssh_http" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-# Launch Ubuntu EC2 instance
-resource "aws_instance" "ubuntu_instance" {
-  ami                    = "ami-02c7683e4ca3ebf58"  # Ubuntu 22.04 LTS for us-east-1
-  instance_type          = "t2.micro"
-  key_name               = "terrafrom"
-  vpc_security_group_ids = [aws_security_group.allow_ssh_http.id]
-  associate_public_ip_address = true
-  iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
 
-  /* user_data = <<-EOF
-              #!/bin/bash
-              apt update -y
-              apt install -y apache2
-              systemctl enable apache2
-              systemctl start apache2
-              echo "<h1>Ubuntu Web Server Running</h1>" > /var/www/html/index.html
-              EOF */
-
-  tags = {
-    Name = "UbuntuSingleTier01"
-  }
-}
-
+# IAM role for SSM
 resource "aws_iam_role" "ssm_role" {
   name = "EC2SSMRole"
 
@@ -86,4 +69,38 @@ resource "aws_iam_role_policy_attachment" "ssm_core_attach" {
 resource "aws_iam_instance_profile" "ssm_profile" {
   name = "EC2SSMInstanceProfile"
   role = aws_iam_role.ssm_role.name
+}
+
+# Launch Ubuntu EC2 instance
+resource "aws_instance" "ubuntu_instance" {
+  ami                         = "ami-02c7683e4ca3ebf58"  # Ubuntu 22.04 LTS (us-east-1)
+  instance_type               = "t2.micro"
+  key_name                    = "terrafrom"
+  vpc_security_group_ids      = [aws_security_group.allow_ssh_http.id]
+  associate_public_ip_address = true
+  iam_instance_profile        = aws_iam_instance_profile.ssm_profile.name
+
+  tags = {
+    Name = "UbuntuSingleTier01"
+  }
+}
+
+# CloudWatch alarm for Auto Recovery
+resource "aws_cloudwatch_metric_alarm" "ec2_auto_recovery" {
+  alarm_name          = "ec2-auto-recovery-${aws_instance.ubuntu_instance.id}"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 2
+  metric_name         = "StatusCheckFailed_System"
+  namespace           = "AWS/EC2"
+  period              = 60
+  statistic           = "Minimum"
+  threshold           = 1
+  alarm_description   = "Recover EC2 instance when system status check fails"
+  dimensions = {
+    InstanceId = aws_instance.ubuntu_instance.id
+  }
+
+  alarm_actions = [
+    "arn:aws:automate:${var.region}:ec2:recover"
+  ]
 }
