@@ -78,7 +78,7 @@ resource "aws_instance" "ubuntu_instance" {
   iam_instance_profile        = aws_iam_instance_profile.ssm_profile.name
 
   tags = {
-    Name = "UbuntuSingleTier01"
+    Name = "UbuntuSingleTier"
   }
 }
 
