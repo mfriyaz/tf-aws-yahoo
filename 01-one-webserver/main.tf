@@ -68,9 +68,9 @@ resource "aws_iam_instance_profile" "ssm_profile" {
   role = aws_iam_role.ssm_role.name
 }
 
-# Launch Linux EC2 instance
+# Launch Ubuntu EC2 instance
 resource "aws_instance" "ubuntu_instance" {
-  ami                         = "ami-0abd2d0501963c350"  # Linux 22.04 LTS (ap-southeast-1)
+  ami                         = "ami-0933f1385008d33c4"  # Ubuntu 22.04 LTS (ap-southeast-1)
   instance_type               = "t2.micro"
   key_name                    = "terrafrom"
   vpc_security_group_ids      = [aws_security_group.allow_ssh_http.id]
